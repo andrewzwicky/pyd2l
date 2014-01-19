@@ -1,5 +1,3 @@
-import itertools
-import random
 from pyd2l.match import Match, InvalidMatchError
 
 

@@ -2,12 +2,13 @@ import re
 from urllib.request import urlopen
 import random
 from math import ceil, floor
-
 from bs4 import BeautifulSoup
+
 
 class InvalidMatchError(Exception):
     def __init__(self, message):
         self.message = message
+
 
 class Match(object):
     def __init__(self, match_id):
@@ -70,21 +71,21 @@ class Match(object):
 
     def _get_rewards(self):
 
-        team_a_odds = self._match_details.findAll('div', {'style': "float: left; margin: 0.25em 2%;"})
-        team_b_odds = self._match_details.findAll('div', {'style': "float: right; margin: 0.25em 2%;"})
+        odds = [self._match_details.findAll('div', {'style': "float: left; margin: 0.25em 2%;"}),
+                self._match_details.findAll('div', {'style': "float: right; margin: 0.25em 2%;"})]
 
-        rewards = dict()
+        final_rewards = {}
 
-        rewards[self.teams[0]] = {
-            list(rewards.strings)[0]: {int(i.split(' ')[2]): float(i.split(' ')[0]) for i in list(rewards.strings)[1:5]}
-            for
-            rewards in team_a_odds}
-        rewards[self.teams[1]] = {
-            list(rewards.strings)[0]: {int(i.split(' ')[2]): float(i.split(' ')[0]) for i in list(rewards.strings)[1:5]}
-            for
-            rewards in team_b_odds}
+        for team, reward in zip(self.teams, odds):
+            final_rewards[team] = {}
+            for rarity_string in reward:
+                rarity_list = list(rarity_string.strings)
+                rarity_key = rarity_list.pop(0)
+                rarity_dict = {int(bet): float(payoff) for payoff, bet in
+                               [pay_str.split(' for ') for pay_str in rarity_list]}
+                final_rewards[team][rarity_key] = rarity_dict
 
-        return rewards
+        return final_rewards
 
     def is_valid_match(self):
         return all([self._valid_match_url, self.winner])
