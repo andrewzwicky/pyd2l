@@ -1,12 +1,13 @@
 import unittest
 from unittest.mock import patch
-from pyd2l.match import Match, InvalidMatchError
+from pyd2l.match import *
 
 
 class MatchTest(unittest.TestCase):
     @classmethod
     def setUp(self):
-        self.test_match = Match(1899)
+        self.test_match = parse_match(1899)
+
 
     def test_d2lpage_init(self):
         self.assertEquals(self.test_match.match_id, 1899)
@@ -14,9 +15,6 @@ class MatchTest(unittest.TestCase):
     def test_invalid_match(self):
         self.assertRaisesRegexp(InvalidMatchError, 'invalid URL' , Match, -1)
         self.assertRaisesRegexp(InvalidMatchError, 'no winner recorded in match', Match, 526)
-
-    def test_determine_url_from_id(self):
-        self.assertEqual(self.test_match._determine_match_url(), 'http://dota2lounge.com/match?m=1899')
 
     def test_correct_print(self):
         self.assertEqual(self.test_match.__str__(), 'id:1899 LGD.cn vs. Fnatic.eu')
