@@ -108,13 +108,13 @@ def unflatten(match_row_csv):
         param = next(csv_iter)
         if param in params:
             if param == 'match_id':
-                match_id = next(csv_iter)
+                match_id = int(next(csv_iter))
             elif param == 'match_url':
                 match_url = next(csv_iter)
             elif param == 'num_bettors':
-                num_bettors = next(csv_iter)
+                num_bettors = int(next(csv_iter))
             elif param == 'num_items':
-                num_items = next(csv_iter)
+                num_items = int(next(csv_iter))
             elif param == 'teams':
                 teams = [next(csv_iter), next(csv_iter)]
             elif param == 'loser':
@@ -122,11 +122,18 @@ def unflatten(match_row_csv):
             elif param == 'winner':
                 winner = next(csv_iter)
             elif param == '_valid_url':
-                valid_url = next(csv_iter)
+                valid_url = bool(next(csv_iter))
             elif param == 'odds':
-                pass
+                o_list = [next(csv_iter) for _ in range(4)][::-1]
+                o_iter = iter(o_list)
+                odds = {next(o_iter): int(next(o_iter)) for _ in range(2)}
             elif param == 'rewards':
-                rewards = [next(csv_iter) for _ in range(74)]
+                r_list = [next(csv_iter) for _ in range(74)][::-1]
+                r_iter = iter(r_list)
+                rewards = {next(r_iter):
+                               {next(r_iter):
+                                    {int(next(r_iter)): float(next(r_iter)) for bet in range(4)} for rarity in range(4)}
+                           for team in range(2)}
 
     return Match(match_id, match_url, num_bettors, num_items, teams, winner, loser, odds, rewards, valid_url)
 
