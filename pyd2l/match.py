@@ -181,6 +181,9 @@ class Match(object):
     def favorite(self):
         return max(self.odds, key=self.odds.get)
 
+    def underdog(self):
+        return min(self.odds, key=self.odds.get)
+
     def calculate_reward(self, team, rarity='Rares', num_bet=4, reward_round=False):
         if team == self.winner:
             raw_reward = self.rewards[team][rarity][num_bet]
