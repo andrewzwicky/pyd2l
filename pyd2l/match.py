@@ -102,7 +102,7 @@ def flatten(d):
 
 def unflatten(match_row_csv):
     params = ['match_id', 'match_url', 'num_bettors', 'num_items', 'teams', 'winner', 'loser', 'odds', 'rewards',
-              '_valid_url']
+              '_valid_match_url']
     csv_iter = iter(match_row_csv)
     for _ in params:
         param = next(csv_iter)
@@ -121,7 +121,7 @@ def unflatten(match_row_csv):
                 loser = next(csv_iter)
             elif param == 'winner':
                 winner = next(csv_iter)
-            elif param == '_valid_url':
+            elif param == '_valid_match_url':
                 valid_url = bool(next(csv_iter))
             elif param == 'odds':
                 o_list = [next(csv_iter) for _ in range(4)][::-1]
@@ -196,100 +196,7 @@ class Match(object):
 
 
 if __name__ == '__main__':
-    unflatten(['rewards',
-               'PR',
-               'Uncommons',
-               '1',
-               '0.6',
-               '2',
-               '1.2',
-               '3',
-               '1.8',
-               '4',
-               '2.4',
-               'Keys',
-               '1',
-               '0.4',
-               '2',
-               '0.9',
-               '3',
-               '1.4',
-               '4',
-               '1.8',
-               'Commons',
-               '1',
-               '0.6',
-               '2',
-               '1.3',
-               '3',
-               '1.9',
-               '4',
-               '2.6',
-               'Rares',
-               '1',
-               '0.5',
-               '2',
-               '1.1',
-               '3',
-               '1.7',
-               '4',
-               '2.3',
-               'Cleave',
-               'Uncommons',
-               '1',
-               '1.6',
-               '2',
-               '3.3',
-               '3',
-               '4.9',
-               '4',
-               '6.6',
-               'Keys',
-               '1',
-               '2',
-               '2',
-               '4',
-               '3',
-               '6',
-               '4',
-               '8.1',
-               'Commons',
-               '1',
-               '1.5',
-               '2',
-               '3',
-               '3',
-               '4.5',
-               '4',
-               '6',
-               'Rares',
-               '1',
-               '1.7',
-               '2',
-               '3.5',
-               '3',
-               '5.2',
-               '4',
-               '6.9',
-               'winner',
-               'PR',
-               'num_items',
-               '26832',
-               'match_id',
-               '2179',
-               'match_url',
-               'http://dota2lounge.com/match?m=2179',
-               'odds',
-               'PR',
-               '63',
-               'Cleave',
-               '37',
-               'teams',
-               'PR',
-               'Cleave',
-               '_valid_match_url',
-               'True',
-               'loser',
-               'Cleave',
-               'num_bettors',
-               '9426'])
+    match_text = [row.decode() for row in urlopen('https://raw.github.com/garth5689/pyd2l/master/match_cache.csv').readlines()]
+    match_reader = csv.reader(match_text, delimiter=',')
+    matches = [unflatten(row) for row in match_reader]
+    print(matches)
