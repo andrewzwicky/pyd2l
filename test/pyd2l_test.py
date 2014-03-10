@@ -1,62 +1,73 @@
 import unittest
 from unittest.mock import patch
-from pyd2l.match import *
+import pickle
+
+from pyd2l.methods import get_match_details, match_404, get_bet_string, get_teams_and_winner_and_loser, get_odds, \
+    get_rewards, flatten, unflatten
+from pyd2l.match import InvalidMatchError
 
 
-class MatchTest(unittest.TestCase):
-    @classmethod
+class PyD2LMethodsTest(unittest.TestCase):
     def setUp(self):
-        self.test_match = parse_match(1899)
+        with open('soup_1899_pickle.pkl', 'rb') as soup_pickle: self.soup = pickle.load(soup_pickle)
+        with open('soup_1899_details_pickle.pkl', 'rb') as details_pickle: self.test_details = pickle.load(
+            details_pickle)
+        with open('test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
+            test_Match_pickle)
+        self.flattened_1899 = ['match_id', 1899, 'num_bettors', 17007, 'rewards', 'Fnatic.eu', 'Keys', 1, 1.8, 2, 3.7,
+                               3, 5.5, 4, 7.4, 'Commons', 1, 1.5, 2, 3.0, 3, 4.6, 4, 6.1, 'Uncommons', 1, 1.5, 2, 3.1,
+                               3, 4.6, 4, 6.2, 'Rares', 1, 2.0, 2, 4.0, 3, 6.0, 4, 7.9, 'LGD.cn', 'Keys', 1, 0.5, 2,
+                               1.0, 3, 1.5, 4, 2.0, 'Commons', 1, 0.6, 2, 1.3, 3, 1.9, 4, 2.6, 'Uncommons', 1, 0.6, 2,
+                               1.3, 3, 1.9, 4, 2.5, 'Rares', 1, 0.5, 2, 1.0, 3, 1.5, 4, 2.0, 'odds', 'Fnatic.eu', 36,
+                               'LGD.cn', 64, 'winner', 'LGD.cn', 'teams', 'LGD.cn', 'Fnatic.eu', '_valid_match_url',
+                               True, 'match_url', 'http://dota2lounge.com/match?m=1899', 'loser', 'Fnatic.eu',
+                               'num_items', 55449]
 
+    def test_get_match_details(self):
+        self.assertEqual(self.test_details, get_match_details(self.soup))
 
-    def test_d2lpage_init(self):
-        self.assertEquals(self.test_match.match_id, 1899)
+    def test_match_404(self):
+        self.assertEqual(match_404(self.soup), False)
 
-    def test_invalid_match(self):
-        self.assertRaisesRegexp(InvalidMatchError, 'invalid URL' , Match, -1)
-        self.assertRaisesRegexp(InvalidMatchError, 'no winner recorded in match', Match, 526)
+        with open('soup_404_pickle.pkl', 'rb') as soup_pickle:
+            soup_404 = pickle.load(soup_pickle)
+            with self.assertRaises(InvalidMatchError):
+                match_404(soup_404)
 
-    def test_correct_print(self):
-        self.assertEqual(self.test_match.__str__(), 'id:1899 LGD.cn vs. Fnatic.eu')
+    def test_get_bet_string(self):
+        self.assertEqual(get_bet_string(self.soup), '17007 people placed 55449 items.')
 
-    def test_correct_repr(self):
-        self.assertEqual(self.test_match.__repr__(), '1899')
+    def test_get_teams_and_winner_and_loser(self):
+        self.assertEqual(get_teams_and_winner_and_loser(self.soup), (['LGD.cn', 'Fnatic.eu'], 'LGD.cn', 'Fnatic.eu'))
 
-    def test_true_match_returns_correct_validity(self):
-        self.assertEqual(self.test_match._determine_match_404(), True)
+    def test_get_odds(self):
+        self.assertEqual(get_odds(['LGD.cn', 'Fnatic.eu'], self.test_details), {'LGD.cn': 64, 'Fnatic.eu': 36})
 
-    def test_gets_correct_bet_string(self):
-        self.assertEqual(self.test_match._get_bet_string(), '17007 people placed 55449 items.')
-
-    def test_correct_num_bettors_counted(self):
-        self.assertEqual(self.test_match.num_bettors, 17007)
-
-    def test_correct_num_items_counted(self):
-        self.assertEqual(self.test_match.num_items, 55449)
-
-    def test_correct_teams(self):
-        self.assertEqual(self.test_match.teams, ['LGD.cn', 'Fnatic.eu'])
-
-    def test_correct_winner(self):
-        self.assertEqual(self.test_match.winner, 'LGD.cn')
-
-    def test_correct_loser(self):
-        self.assertEqual(self.test_match.loser, 'Fnatic.eu')
-
-    def test_gets_correct_odds(self):
-        self.assertEqual(self.test_match._get_odds(), {'LGD.cn': 64, 'Fnatic.eu': 36})
-
-    def test_correct_rewards(self):
+    def test_get_rewards(self):
         rewards = {'LGD.cn': {'Commons': {1: 0.6, 2: 1.3, 3: 1.9, 4: 2.6},
                               'Keys': {1: 0.5, 2: 1.0, 3: 1.5, 4: 2.0},
                               'Rares': {1: 0.5, 2: 1.0, 3: 1.5, 4: 2.0},
                               'Uncommons': {1: 0.6, 2: 1.3, 3: 1.9, 4: 2.5}},
-                   'Fnatic.eu': {'Commons': {1: 1.5, 2: 3, 3: 4.6, 4: 6.1},
+                   'Fnatic.eu': {'Commons': {1: 1.5, 2: 3.0, 3: 4.6, 4: 6.1},
                                  'Keys': {1: 1.8, 2: 3.7, 3: 5.5, 4: 7.4},
                                  'Rares': {1: 2.0, 2: 4.0, 3: 6.0, 4: 7.9},
                                  'Uncommons': {1: 1.5, 2: 3.1, 3: 4.6, 4: 6.2}}}
+        self.assertEqual(get_rewards(self.test_details, ['LGD.cn', 'Fnatic.eu']), rewards)
 
-        self.assertEqual(self.test_match._get_rewards(), rewards)
+    def test_flatten(self):
+        self.assertEqual(set(flatten(self.test_match.__dict__)), set(self.flattened_1899))
+
+    def test_unflatten(self):
+        self.assertEqual(unflatten(self.flattened_1899).__dict__, self.test_match.__dict__)
+
+
+class MatchTest(unittest.TestCase):
+    def setUp(self):
+        # with patch('pyd2l.methods.urlopen') as urlopen_patch:
+        #     urlopen_patch.return_value = open('Dota 2 Lounge - LGD.cn vs Fnatic.eu - Match 1899.html')
+        #     self.test_match = parse_match(1899)
+        with open('test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
+            test_Match_pickle)
 
     def test_is_valid_match(self):
         self.assertEqual(self.test_match.is_valid_match(), True)
