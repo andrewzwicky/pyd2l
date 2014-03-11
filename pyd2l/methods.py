@@ -144,8 +144,8 @@ def write_matches_csv(file_name, match_range):
             progress = int(i // (len(match_range) / progress_bar_width))
             sys.stdout.write('\r[{}{}]{}'.format('#' * progress, ' ' * (progress_bar_width - progress), m_id))
             try:
-                target_writer.writerow(list(flatten(OrderedDict(sorted(parse_match(m_id).__dict__.items(), key=lambda x: x[0])))))
-            except (InvalidMatchError, IncompleteRead):
+                target_writer.writerow(list(flatten(parse_match(m_id).__dict__)))
+            except InvalidMatchError:
                 pass
         sys.stdout.flush()
         sys.stdout.write('\r[{}{}]'.format('#' * progress_bar_width, ' ' * 0))
