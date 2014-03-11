@@ -25,7 +25,7 @@ def parse_match(match_id):
 def get_match_details(soup):
     return soup.find('section', {'class': 'box'})
 
-
+#TODO: This should include other methods of matches being invalid. i.e. #272, 1-13
 def match_404(soup):
     try:
         if soup.find('h1').text == '404':
@@ -149,3 +149,9 @@ def write_matches_csv(file_name, match_range):
                 pass
         sys.stdout.flush()
         sys.stdout.write('\r[{}{}]'.format('#' * progress_bar_width, ' ' * 0))
+
+
+if __name__ == "__main__":
+    with open('../match_cache.csv') as cache:
+        m_reader = csv.reader(cache, delimiter=',')
+        matches = [unflatten(row) for row in m_reader]

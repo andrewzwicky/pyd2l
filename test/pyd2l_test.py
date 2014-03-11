@@ -8,6 +8,7 @@ from pyd2l.match import InvalidMatchError
 
 
 class PyD2LMethodsTest(unittest.TestCase):
+
     def setUp(self):
         with open('soup_1899_pickle.pkl', 'rb') as soup_pickle: self.soup = pickle.load(soup_pickle)
         with open('soup_1899_details_pickle.pkl', 'rb') as details_pickle: self.test_details = pickle.load(
