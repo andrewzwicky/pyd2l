@@ -1,3 +1,4 @@
+import os
 import unittest
 from unittest.mock import patch
 import pickle
@@ -6,17 +7,13 @@ from pyd2l.methods import get_match_details, match_404, get_bet_string, get_team
     get_rewards, flatten, unflatten
 from pyd2l.match import InvalidMatchError
 
-
-import os
-
-
 class PyD2LMethodsTest(unittest.TestCase):
 
     def setUp(self):
-        with open('./soup_1899_pickle.pkl', 'rb') as soup_pickle: self.soup = pickle.load(soup_pickle)
-        with open('./soup_1899_details_pickle.pkl', 'rb') as details_pickle: self.test_details = pickle.load(
+        with open(os.path.join(os.path.dirname(__file__),'soup_1899_pickle.pkl', 'rb') as soup_pickle: self.soup = pickle.load(soup_pickle)
+        with open(os.path.join(os.path.dirname(__file__),'soup_1899_details_pickle.pkl', 'rb') as details_pickle: self.test_details = pickle.load(
             details_pickle)
-        with open('./test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
+        with open(os.path.join(os.path.dirname(__file__),'test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
             test_Match_pickle)
         self.flattened_1899 = ['match_id', 1899, 'num_bettors', 17007, 'rewards', 'Fnatic.eu', 'Keys', 1, 1.8, 2, 3.7,
                                3, 5.5, 4, 7.4, 'Commons', 1, 1.5, 2, 3.0, 3, 4.6, 4, 6.1, 'Uncommons', 1, 1.5, 2, 3.1,
@@ -33,7 +30,7 @@ class PyD2LMethodsTest(unittest.TestCase):
     def test_match_404(self):
         self.assertEqual(match_404(self.soup), False)
 
-        with open('./soup_404_pickle.pkl', 'rb') as soup_pickle:
+        with open(os.path.join(os.path.dirname(__file__),'soup_404_pickle.pkl', 'rb') as soup_pickle:
             soup_404 = pickle.load(soup_pickle)
             with self.assertRaises(InvalidMatchError):
                 match_404(soup_404)
@@ -67,7 +64,7 @@ class PyD2LMethodsTest(unittest.TestCase):
 
 class MatchTest(unittest.TestCase):
     def setUp(self):
-        with open('./test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
+        with open(os.path.join(os.path.dirname(__file__),'test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
             test_Match_pickle)
 
     def test_is_valid_match(self):
@@ -104,8 +101,3 @@ class MatchTest(unittest.TestCase):
             self.assertEqual(
                 self.test_match.calculate_reward([self.test_match.winner, self.test_match.loser][0], num_bet=3,
                                                  reward_round=True), 2.0)
-                                                 
-if __name__ == "__main__":
-    print(os.environ.get('$TRAVIS_BUILD_DIR'))
-    print(os.getcwd())
-    unittest.main()
