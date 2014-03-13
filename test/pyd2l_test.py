@@ -7,6 +7,12 @@ from pyd2l.methods import get_match_details, match_404, get_bet_string, get_team
 from pyd2l.match import InvalidMatchError
 
 
+import os
+
+print(os.environ.get('$TRAVIS_BUILD_DIR'))
+print(os.getcwd())
+
+
 class PyD2LMethodsTest(unittest.TestCase):
 
     def setUp(self):
