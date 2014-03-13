@@ -9,9 +9,6 @@ from pyd2l.match import InvalidMatchError
 
 import os
 
-print(os.environ.get('$TRAVIS_BUILD_DIR'))
-print(os.getcwd())
-
 
 class PyD2LMethodsTest(unittest.TestCase):
 
@@ -107,3 +104,8 @@ class MatchTest(unittest.TestCase):
             self.assertEqual(
                 self.test_match.calculate_reward([self.test_match.winner, self.test_match.loser][0], num_bet=3,
                                                  reward_round=True), 2.0)
+                                                 
+if __name__ == "__main__":
+    print(os.environ.get('$TRAVIS_BUILD_DIR'))
+    print(os.getcwd())
+    unittest.main()
