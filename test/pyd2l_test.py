@@ -10,10 +10,10 @@ from pyd2l.match import InvalidMatchError
 class PyD2LMethodsTest(unittest.TestCase):
 
     def setUp(self):
-        with open('soup_1899_pickle.pkl', 'rb') as soup_pickle: self.soup = pickle.load(soup_pickle)
-        with open('soup_1899_details_pickle.pkl', 'rb') as details_pickle: self.test_details = pickle.load(
+        with open('./soup_1899_pickle.pkl', 'rb') as soup_pickle: self.soup = pickle.load(soup_pickle)
+        with open('./soup_1899_details_pickle.pkl', 'rb') as details_pickle: self.test_details = pickle.load(
             details_pickle)
-        with open('test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
+        with open('./test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
             test_Match_pickle)
         self.flattened_1899 = ['match_id', 1899, 'num_bettors', 17007, 'rewards', 'Fnatic.eu', 'Keys', 1, 1.8, 2, 3.7,
                                3, 5.5, 4, 7.4, 'Commons', 1, 1.5, 2, 3.0, 3, 4.6, 4, 6.1, 'Uncommons', 1, 1.5, 2, 3.1,
@@ -30,7 +30,7 @@ class PyD2LMethodsTest(unittest.TestCase):
     def test_match_404(self):
         self.assertEqual(match_404(self.soup), False)
 
-        with open('soup_404_pickle.pkl', 'rb') as soup_pickle:
+        with open('./soup_404_pickle.pkl', 'rb') as soup_pickle:
             soup_404 = pickle.load(soup_pickle)
             with self.assertRaises(InvalidMatchError):
                 match_404(soup_404)
@@ -64,10 +64,7 @@ class PyD2LMethodsTest(unittest.TestCase):
 
 class MatchTest(unittest.TestCase):
     def setUp(self):
-        # with patch('pyd2l.methods.urlopen') as urlopen_patch:
-        #     urlopen_patch.return_value = open('Dota 2 Lounge - LGD.cn vs Fnatic.eu - Match 1899.html')
-        #     self.test_match = parse_match(1899)
-        with open('test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
+        with open('./test_Match_1899_pickle.pkl', 'rb') as test_Match_pickle: self.test_match = pickle.load(
             test_Match_pickle)
 
     def test_is_valid_match(self):
