@@ -28,7 +28,7 @@ def simulate(matches, pick_method='random', num_sims=500, **kwargs):
 
 
 def plot_sims(simulations, colors):
-    fig, ax = plt.subplots(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(18, 12))
     fig.patch.set_facecolor('white')
     plt.subplots_adjust(wspace=0)
 
@@ -48,5 +48,14 @@ def plot_sims(simulations, colors):
         ax2.hist([run[-1] for run in sim_run], normed=1, orientation='horizontal', color=color, alpha=0.6)
 
     ax2.autoscale(True, 'x', False)
+
+    ax2.yaxis.set_label_position('right')
+    ax2.xaxis.set_label_position('top')
+
+    ax1.set_xlabel('Match Num')
+    ax1.set_ylabel('Number of Items')
+    ax2.set_xlabel('Probability')
+    ax2.set_ylabel('Number of Items')
+
     plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
     plt.show()
