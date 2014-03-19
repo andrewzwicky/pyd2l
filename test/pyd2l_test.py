@@ -10,10 +10,12 @@ from pyd2l.match import InvalidMatchError
 
 class PyD2LMethodsTest(unittest.TestCase):
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__), 'soup_1899_pickle.pkl'), 'rb') as soup_pickle: self.soup = pickle.load(soup_pickle)
-        with open(os.path.join(os.path.dirname(__file__), 'soup_1899_details_pickle.pkl'), 'rb') as details_pickle: self.test_details = pickle.load(details_pickle)
-        with open(os.path.join(os.path.dirname(__file__), 'test_Match_1899_pickle.pkl'), 'rb') as test_Match_pickle: self.test_match = pickle.load(
-            test_Match_pickle)
+        with open(os.path.join(os.path.dirname(__file__), 'soup_1899_pickle.pkl'), 'rb') as soup_pickle:
+            self.soup = pickle.load(soup_pickle)
+        with open(os.path.join(os.path.dirname(__file__), 'soup_1899_details_pickle.pkl'), 'rb') as details_pickle:
+            self.test_details = pickle.load(details_pickle)
+        with open(os.path.join(os.path.dirname(__file__), 'test_Match_1899_pickle.pkl'), 'rb') as test_Match_pickle:
+            self.test_match = pickle.load(test_Match_pickle)
         self.flattened_1899 = ['match_id', 1899, 'num_bettors', 17007, 'rewards', 'Fnatic.eu', 'Keys', 1, 1.8, 2, 3.7,
                                3, 5.5, 4, 7.4, 'Commons', 1, 1.5, 2, 3.0, 3, 4.6, 4, 6.1, 'Uncommons', 1, 1.5, 2, 3.1,
                                3, 4.6, 4, 6.2, 'Rares', 1, 2.0, 2, 4.0, 3, 6.0, 4, 7.9, 'LGD.cn', 'Keys', 1, 0.5, 2,
@@ -63,8 +65,8 @@ class PyD2LMethodsTest(unittest.TestCase):
 
 class MatchTest(unittest.TestCase):
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__), 'test_Match_1899_pickle.pkl'), 'rb') as test_Match_pickle: self.test_match = pickle.load(
-            test_Match_pickle)
+        with open(os.path.join(os.path.dirname(__file__), 'test_Match_1899_pickle.pkl'), 'rb') as test_Match_pickle:
+            self.test_match = pickle.load(test_Match_pickle)
 
     def test_is_valid_match(self):
         self.assertEqual(self.test_match.is_valid_match(), True)
