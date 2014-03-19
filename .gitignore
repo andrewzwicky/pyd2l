@@ -26,6 +26,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+test/cover/*
 
 # Translations
 *.mo
@@ -34,3 +35,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# IPython Notebook
+.ipynb_checkpoints/*
