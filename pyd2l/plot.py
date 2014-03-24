@@ -59,3 +59,32 @@ def plot_sims(simulations, colors):
 
     plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
     plt.show()
+
+
+def plot_odds_correlation(groups, ratios, fidelity=2):
+    fig, ax = plt.subplots(figsize=(12, 10))
+    ax.bar(groups, ratios, fidelity, color=(0.9, 0.9, 0.9))
+    plt.plot([0, 100], [0, 1])
+    ax.set_xlim(min(groups), max(groups) + fidelity)
+    ax.set_xticks(groups + (max(groups) + fidelity,))
+    ax.set_ylim(0, 1)
+    ax.set_yticks([a / 10 for a in range(11)])
+    ax.set_xlabel('Odds of the Favorite')
+    ax.set_ylabel('Probability')
+    fig.patch.set_facecolor('white')
+    plt.show()
+
+
+def plot_winners_vs_number_bets(num_bets,winner_odds):
+    fig, ax = plt.subplots(figsize=(20,10))
+    ax1 = plt.subplot2grid((1, 2), (0, 0))
+    ax2 = plt.subplot2grid((1, 2), (0, 1))
+    fig.patch.set_facecolor('white')
+    ax1.plot(num_bets, winner_odds, 'ok')
+    ax2.plot(num_bets, winner_odds, 'ok')
+    ax2.set_xscale('log')
+    ax1.set_xlabel('Number of Bettors')
+    ax2.set_xlabel('Number of Bettors [Log Scale]')
+    ax1.set_ylabel('Winner Odds')
+    ax2.set_ylabel('Winner Odds')
+    plt.show()
