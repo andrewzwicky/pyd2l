@@ -61,9 +61,14 @@ def plot_sims(simulations, colors):
     plt.show()
 
 
-def plot_odds_correlation(groups, ratios, fidelity=2):
+def plot_odds_correlation(groups, num_group_matches, ratios, fidelity=2):
     fig, ax = plt.subplots(figsize=(12, 10))
-    ax.bar(groups, ratios, fidelity, color=(0.9, 0.9, 0.9))
+    rects = ax.bar(groups, ratios, fidelity, color=(0.9, 0.9, 0.9))
+
+    for i, rect in enumerate(rects):
+        ax.text(rect.get_x() + rect.get_width() / 2, .4, '{} matches'.format(num_group_matches[i]), rotation='vertical',
+                va='top', ha='center')
+
     plt.plot([0, 100], [0, 1])
     ax.set_xlim(min(groups), max(groups) + fidelity)
     ax.set_xticks(groups + (max(groups) + fidelity,))
@@ -75,8 +80,8 @@ def plot_odds_correlation(groups, ratios, fidelity=2):
     plt.show()
 
 
-def plot_winners_vs_number_bets(num_bets,winner_odds):
-    fig, ax = plt.subplots(figsize=(20,10))
+def plot_winners_vs_number_bets(num_bets, winner_odds):
+    fig, ax = plt.subplots(figsize=(20, 10))
     ax1 = plt.subplot2grid((1, 2), (0, 0))
     ax2 = plt.subplot2grid((1, 2), (0, 1))
     fig.patch.set_facecolor('white')
@@ -88,3 +93,7 @@ def plot_winners_vs_number_bets(num_bets,winner_odds):
     ax1.set_ylabel('Winner Odds')
     ax2.set_ylabel('Winner Odds')
     plt.show()
+
+if __name__ == "__main__":
+    groups,num_group_matches, ratios = [(51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90), (125, 155, 156, 167, 191, 216, 266, 196, 199, 173, 127, 55, 24, 2), (0.56, 0.535483870967742, 0.5448717948717948, 0.6047904191616766, 0.6858638743455497, 0.7361111111111112, 0.7218045112781954, 0.6836734693877551, 0.7688442211055276, 0.838150289017341, 0.8976377952755905, 0.9454545454545454, 0.9166666666666666, 1.0)]
+    plot_odds_correlation(groups, num_group_matches, ratios,3)
