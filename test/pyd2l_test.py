@@ -81,7 +81,7 @@ class MatchTest(unittest.TestCase):
         self.assertEqual(self.test_match.calculate_reward(self.test_match.loser), -4)
 
     def test_raw_rewards(self):
-        self.assertEqual(self.test_match.calculate_reward(self.test_match.winner, num_bet=3), 1.5)
+        self.assertEqual(self.test_match.calculate_reward(self.test_match.winner), 2.0)
 
     def test_calculate_reward_rounded_ceil(self):
         with patch('pyd2l.match.random') as mock_random:

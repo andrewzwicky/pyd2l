@@ -2,6 +2,7 @@ import random
 from itertools import accumulate
 
 import matplotlib.pyplot as plt
+from matplotlib import lines
 
 
 def get_pick(pick_method, match):
@@ -18,7 +19,7 @@ def get_pick(pick_method, match):
     return pick
 
 
-def simulate(matches, pick_method='random', num_sims=500, **kwargs):
+def simulate(matches=[], pick_method='random', num_sims=500, **kwargs):
     simulations = []
     for _ in range(num_sims):
         simulations.append(
@@ -27,17 +28,22 @@ def simulate(matches, pick_method='random', num_sims=500, **kwargs):
     return simulations
 
 
-def plot_sims(simulations, colors):
-    fig, ax = plt.subplots(figsize=(18, 12))
+def plot_sims(match_ids, simulations, colors, labels, title):
+    fig, ax = plt.subplots(figsize=(14, 10))
     fig.patch.set_facecolor('white')
     plt.subplots_adjust(wspace=0)
 
     ax1 = plt.subplot2grid((1, 3), (0, 0), colspan=2)
-    ax1.set_xlim(right=len(simulations[0][0]))
+    ax1.set_xlim(right=max(list(zip(*map(sorted, match_ids)))[-1]))
 
-    for sim_run, color in zip(simulations, colors):
+    legend_lines = list(map(lambda x: lines.Line2D([0], [0], color=x), colors))
+    ax1.set_title(title, fontsize=20)
+
+    for ids, sim_run, color in zip(match_ids, simulations, colors):
         for run in sim_run:
-            ax1.plot(run, linewidth=2, alpha=0.05, color=color)
+            ax1.plot(ids, run, linewidth=2, alpha=0.05, color=color)
+
+    ax1.legend(legend_lines, labels, loc='lower left', fontsize=12)
 
     ax2 = plt.subplot2grid((1, 3), (0, 2))
     ax2.xaxis.tick_top()
@@ -85,15 +91,16 @@ def plot_winners_vs_number_bets(num_bets, winner_odds):
     ax1 = plt.subplot2grid((1, 2), (0, 0))
     ax2 = plt.subplot2grid((1, 2), (0, 1))
     fig.patch.set_facecolor('white')
-    ax1.plot(num_bets, winner_odds, 'ok')
-    ax2.plot(num_bets, winner_odds, 'ok')
-    ax2.set_xscale('log')
+    # ax1.plot(num_bets, winner_odds, 'ok')
+    #ax2.plot(num_bets, winner_odds, 'ok')
+    ax1.hexbin(num_bets, winner_odds, bins='log', cmap=plt.cm.YlOrRd, gridsize=45)
+    ax2.hexbin(num_bets, winner_odds, bins='log', xscale='log', cmap=plt.cm.YlOrRd, gridsize=45)
     ax1.set_xlabel('Number of Bettors')
     ax2.set_xlabel('Number of Bettors [Log Scale]')
     ax1.set_ylabel('Winner Odds')
     ax2.set_ylabel('Winner Odds')
     plt.show()
 
+
 if __name__ == "__main__":
-    groups,num_group_matches, ratios = [(51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90), (125, 155, 156, 167, 191, 216, 266, 196, 199, 173, 127, 55, 24, 2), (0.56, 0.535483870967742, 0.5448717948717948, 0.6047904191616766, 0.6858638743455497, 0.7361111111111112, 0.7218045112781954, 0.6836734693877551, 0.7688442211055276, 0.838150289017341, 0.8976377952755905, 0.9454545454545454, 0.9166666666666666, 1.0)]
-    plot_odds_correlation(groups, num_group_matches, ratios,3)
+    pass

@@ -2,8 +2,9 @@ import re
 from urllib.request import urlopen
 import csv
 import sys
-from http.client import IncompleteRead
-from collections import OrderedDict
+import itertools
+import multiprocessing
+
 from bs4 import BeautifulSoup
 
 from pyd2l.match import Match, InvalidMatchError
@@ -24,6 +25,7 @@ def parse_match(match_id):
 
 def get_match_details(soup):
     return soup.find('section', {'class': 'box'})
+
 
 #TODO: This should include other methods of matches being invalid. i.e. #272, 1-13
 def match_404(soup):
@@ -83,7 +85,7 @@ def get_rewards(match_details, teams):
 def flatten(d):
     if type(d) in [dict, list]:
         try:
-            for k, v in d.items():
+            for k, v in sorted(d.items()):
                 yield k
                 for nested_v in flatten(v):
                     yield nested_v
@@ -135,23 +137,21 @@ def unflatten(match_row_csv):
     return Match(match_id, match_url, num_bettors, num_items, teams, winner, loser, odds, rewards, valid_url)
 
 
-def write_matches_csv(file_name, match_range):
+def write_matches_csv(file_name, matches):
     progress_bar_width = 100
-    with open(file_name, 'w', encoding='utf-8', newline='') as target_csv:
+    with open(file_name, 'a', encoding='utf-8', newline='') as target_csv:
         target_writer = csv.writer(target_csv, delimiter=',')
-        for i, m_id in enumerate(match_range):
+        for i, match in enumerate(matches):
             sys.stdout.flush()
-            progress = int(i // (len(match_range) / progress_bar_width))
-            sys.stdout.write('\r[{}{}]{}'.format('#' * progress, ' ' * (progress_bar_width - progress), m_id))
+            progress = int(i // (len(matches) / progress_bar_width))
+            sys.stdout.write('\r[{}{}]{}'.format('#' * progress, ' ' * (progress_bar_width - progress), match))
             try:
-                target_writer.writerow(list(flatten(parse_match(m_id).__dict__)))
+                target_writer.writerow(list(flatten(match.__dict__)))
             except InvalidMatchError:
                 pass
         sys.stdout.flush()
         sys.stdout.write('\r[{}{}]'.format('#' * progress_bar_width, ' ' * 0))
 
 
-if __name__ == "__main__":
-    with open('../match_cache.csv') as cache:
-        m_reader = csv.reader(cache, delimiter=',')
-        matches = [unflatten(row) for row in m_reader]
+if __name__ == '__main__':
+    pass
