@@ -12,7 +12,7 @@ setup(
     platforms='any',
     classifiers = [
         'Development Status :: 1 - Planning',
-        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
