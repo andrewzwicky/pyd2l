@@ -2,5 +2,6 @@
 branch = True
 
 [report]
-include = pyd2l/match.py
-include = pyd2l/methods.py
+include =
+    pyd2l/match.py
+    pyd2l/methods.py
